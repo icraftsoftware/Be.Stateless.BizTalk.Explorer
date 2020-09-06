@@ -17,7 +17,6 @@
 #endregion
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Win32;
 
 namespace Be.Stateless.BizTalk.Explorer
@@ -27,15 +26,18 @@ namespace Be.Stateless.BizTalk.Explorer
 	/// </summary>
 	public static class BizTalkServerGroup
 	{
-		[SuppressMessage("Design", "CA1065:Do not raise exceptions in unexpected locations")]
 		static BizTalkServerGroup()
+		{
+			Applications = new ApplicationCollection();
+		}
+
+		private static BizTalkServerManagementDatabase CreateManagementDatabase()
 		{
 			const string path = @"SOFTWARE\Microsoft\BizTalk Server\3.0\Administration";
 			using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
 			using (var subKey = baseKey.OpenSubKey(path) ?? throw new InvalidOperationException($"Cannot find registry key '{baseKey.Name}\\{path}'"))
 			{
-				ManagementDatabase = new BizTalkServerManagementDatabase((string) subKey.GetValue("MgmtDBServer"), (string) subKey.GetValue("MgmtDBName"));
-				Applications = new ApplicationCollection();
+				return new BizTalkServerManagementDatabase((string) subKey.GetValue("MgmtDBServer"), (string) subKey.GetValue("MgmtDBName"));
 			}
 		}
 
@@ -44,6 +46,8 @@ namespace Be.Stateless.BizTalk.Explorer
 		/// </summary>
 		public static ApplicationCollection Applications { get; }
 
-		public static BizTalkServerManagementDatabase ManagementDatabase { get; }
+		public static BizTalkServerManagementDatabase ManagementDatabase => _managementDatabaseFactory.Value;
+
+		private static readonly Lazy<BizTalkServerManagementDatabase> _managementDatabaseFactory = new Lazy<BizTalkServerManagementDatabase>(CreateManagementDatabase);
 	}
 }
