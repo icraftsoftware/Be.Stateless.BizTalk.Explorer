@@ -25,7 +25,7 @@ namespace Be.Stateless.BizTalk.Explorer
 {
 	public class SendPortFixture
 	{
-		[SkippableFact(typeof(ArgumentException))]
+		[SkippableFact(typeof(ArgumentException), typeof(InvalidOperationException))]
 		public void Unenlist()
 		{
 			var application = BizTalkServerGroup.Applications["BizTalk Server Default Application"];
