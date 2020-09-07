@@ -50,6 +50,7 @@ namespace Be.Stateless.BizTalk.Explorer
 		{
 			get
 			{
+				if (!BizTalkServerGroup.IsConfigured) throw new InvalidOperationException("Microsoft BizTalk Server is not configured on this machine.");
 				_explorer = new BtsCatalogExplorer();
 				try
 				{
