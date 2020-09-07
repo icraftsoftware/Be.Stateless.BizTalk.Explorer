@@ -32,16 +32,22 @@ namespace Be.Stateless.BizTalk.Management
 	{
 		public OrchestrationFixture()
 		{
-			var assembly = Assembly.Load("Microsoft.BizTalk.Edi.BatchingOrchestration, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
-			_orchestrationType = assembly.GetType("Microsoft.BizTalk.Edi.BatchSuspendOrchestration.BatchElementSuspendService", true);
+			if (BizTalkServerGroup.IsConfigured)
+			{
+				var assembly = Assembly.Load("Microsoft.BizTalk.Edi.BatchingOrchestration, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
+				_orchestrationType = assembly.GetType("Microsoft.BizTalk.Edi.BatchSuspendOrchestration.BatchElementSuspendService", true);
+			}
 		}
 
 		#region IDisposable Members
 
 		public void Dispose()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
-			orchestration.EnsureUnenlisted();
+			if (BizTalkServerGroup.IsConfigured)
+			{
+				var orchestration = new Orchestration(_orchestrationType);
+				orchestration.EnsureUnenlisted();
+			}
 		}
 
 		#endregion
