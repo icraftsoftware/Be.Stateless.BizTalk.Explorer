@@ -27,7 +27,7 @@ using Microsoft.BizTalk.XLANGs.BTXEngine;
 
 namespace Be.Stateless.BizTalk.Management
 {
-	public class Orchestration
+	public class Orchestration : IDisposable
 	{
 		public Orchestration(Type type)
 		{
@@ -40,6 +40,21 @@ namespace Be.Stateless.BizTalk.Management
 			_managementObject = new ManagementObject { Path = ManagementPath };
 			_managementObject.Get();
 		}
+
+		~Orchestration()
+		{
+			Dispose(false);
+		}
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		#endregion
 
 		public OrchestrationStatus Status
 		{
@@ -75,6 +90,13 @@ namespace Be.Stateless.BizTalk.Management
 					_orchestrationType.FullName);
 				return new ManagementPath(path);
 			}
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (_isDisposed) return;
+			if (disposing) _managementObject?.Dispose();
+			_isDisposed = true;
 		}
 
 		public void EnsureStarted()
@@ -159,7 +181,6 @@ namespace Be.Stateless.BizTalk.Management
 		/// Enlists the orchestration by creating its activation subscription.
 		/// </summary>
 		/// <seealso href="https://docs.microsoft.com/en-us/biztalk/core/technical-reference/msbts-orchestration-enlist-method-wmi">MSBTS_Orchestration.Enlist</seealso>
-		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		private void WmiEnlist()
 		{
 			_managementObject.InvokeMethod("Enlist", Array.Empty<object>());
@@ -235,6 +256,9 @@ namespace Be.Stateless.BizTalk.Management
 
 		private static readonly ILog _logger = LogManager.GetLogger(typeof(Orchestration));
 		private readonly Type _orchestrationType;
+		private bool _isDisposed;
+
+		[SuppressMessage("Usage", "CA2213:Disposable fields should be disposed")]
 		private ManagementObject _managementObject;
 	}
 }

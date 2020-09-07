@@ -28,6 +28,7 @@ using static Be.Stateless.DelegateFactory;
 
 namespace Be.Stateless.BizTalk.Management
 {
+	[SuppressMessage("ReSharper", "AccessToDisposedClosure")]
 	public class OrchestrationFixture : IDisposable
 	{
 		public OrchestrationFixture()
@@ -57,7 +58,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureNotUnenlisted();
 			Action(() => orchestration.Enlist()).Should().Throw<COMException>();
 		}
@@ -67,7 +68,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureStarted();
 			Action(() => orchestration.Enlist()).Should().Throw<COMException>();
 		}
@@ -77,7 +78,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureUnenlisted();
 			Action(() => orchestration.Enlist()).Should().NotThrow();
 			orchestration.Status.Should().Be(OrchestrationStatus.Enlisted);
@@ -88,7 +89,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureNotUnenlisted();
 			Action(() => orchestration.Start()).Should().NotThrow();
 			orchestration.Status.Should().Be(OrchestrationStatus.Started);
@@ -99,7 +100,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureStarted();
 			Action(() => orchestration.Start()).Should().Throw<COMException>();
 		}
@@ -109,7 +110,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureUnenlisted();
 			Action(() => orchestration.Start()).Should().Throw<COMException>();
 		}
@@ -119,7 +120,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureNotUnenlisted();
 			Action(() => orchestration.Stop()).Should().Throw<COMException>();
 		}
@@ -129,7 +130,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureStarted();
 			Action(() => orchestration.Stop()).Should().NotThrow();
 			orchestration.Status.Should().Be(OrchestrationStatus.Enlisted);
@@ -140,7 +141,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureUnenlisted();
 			Action(() => orchestration.Stop()).Should().Throw<COMException>();
 		}
@@ -161,7 +162,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureNotUnenlisted();
 			Action(() => orchestration.Unenlist()).Should().NotThrow();
 			orchestration.Status.Should().Be(OrchestrationStatus.Unenlisted);
@@ -172,7 +173,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureStarted();
 			Action(() => orchestration.Unenlist()).Should().NotThrow();
 			orchestration.Status.Should().Be(OrchestrationStatus.Unenlisted);
@@ -183,7 +184,7 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 
-			var orchestration = new Orchestration(_orchestrationType);
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureUnenlisted();
 			Action(() => orchestration.Unenlist()).Should().Throw<COMException>();
 		}
