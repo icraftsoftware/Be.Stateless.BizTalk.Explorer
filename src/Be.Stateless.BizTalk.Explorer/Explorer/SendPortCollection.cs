@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using BizTalkSendPortCollection = Microsoft.BizTalk.ExplorerOM.SendPortCollection;
 
 namespace Be.Stateless.BizTalk.Explorer
@@ -41,6 +42,7 @@ namespace Be.Stateless.BizTalk.Explorer
 			}
 		}
 
+		[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local", Justification = "Public API.")]
 		private BizTalkSendPortCollection BizTalkSendPortCollection { get; set; }
 	}
 }

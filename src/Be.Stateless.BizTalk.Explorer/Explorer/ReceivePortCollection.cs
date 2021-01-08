@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using BizTalkReceivePortCollection = Microsoft.BizTalk.ExplorerOM.ReceivePortCollection;
 
 namespace Be.Stateless.BizTalk.Explorer
@@ -28,6 +29,7 @@ namespace Be.Stateless.BizTalk.Explorer
 			BizTalkReceivePortCollection = ports ?? throw new ArgumentNullException(nameof(ports));
 		}
 
+		[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
 		public ReceivePort this[string name]
 		{
 			get

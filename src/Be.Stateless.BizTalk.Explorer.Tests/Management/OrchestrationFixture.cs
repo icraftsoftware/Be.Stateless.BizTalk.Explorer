@@ -24,13 +24,14 @@ using Be.Stateless.BizTalk.Explorer;
 using FluentAssertions;
 using Microsoft.BizTalk.ExplorerOM;
 using Xunit;
-using static Be.Stateless.DelegateFactory;
+using static Be.Stateless.Unit.DelegateFactory;
 
 namespace Be.Stateless.BizTalk.Management
 {
 	[SuppressMessage("ReSharper", "AccessToDisposedClosure")]
 	public class OrchestrationFixture : IDisposable
 	{
+		[SuppressMessage("ReSharper", "InvertIf")]
 		public OrchestrationFixture()
 		{
 			if (BizTalkServerGroup.IsConfigured)
@@ -42,6 +43,7 @@ namespace Be.Stateless.BizTalk.Management
 
 		#region IDisposable Members
 
+		[SuppressMessage("ReSharper", "InvertIf")]
 		public void Dispose()
 		{
 			if (BizTalkServerGroup.IsConfigured)

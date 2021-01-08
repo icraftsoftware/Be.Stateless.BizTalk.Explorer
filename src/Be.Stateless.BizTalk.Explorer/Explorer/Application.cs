@@ -17,10 +17,13 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using BizTalkApplication = Microsoft.BizTalk.ExplorerOM.Application;
 
 namespace Be.Stateless.BizTalk.Explorer
 {
+	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
+	[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global", Justification = "Public API.")]
 	public sealed class Application : IDisposable
 	{
 		public Application(BizTalkApplication application, ApplicationCollection applicationCollection)

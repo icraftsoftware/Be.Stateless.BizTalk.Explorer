@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using BizTalkReceiveLocationCollection = Microsoft.BizTalk.ExplorerOM.ReceiveLocationCollection;
 
 namespace Be.Stateless.BizTalk.Explorer
@@ -28,6 +29,7 @@ namespace Be.Stateless.BizTalk.Explorer
 			BizTalkReceiveLocationCollection = locations ?? throw new ArgumentNullException(nameof(locations));
 		}
 
+		[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
 		public ReceiveLocation this[string name]
 		{
 			get

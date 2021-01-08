@@ -17,11 +17,13 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.BizTalk.ExplorerOM;
 using BizTalkSendPort = Microsoft.BizTalk.ExplorerOM.SendPort;
 
 namespace Be.Stateless.BizTalk.Explorer
 {
+	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
 	public class SendPort
 	{
 		public SendPort(BizTalkSendPort port)
@@ -42,6 +44,7 @@ namespace Be.Stateless.BizTalk.Explorer
 			if (Status != PortStatus.Started) Status = PortStatus.Started;
 		}
 
+		[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
 		public void Stop()
 		{
 			if (Status != PortStatus.Stopped) Status = PortStatus.Stopped;

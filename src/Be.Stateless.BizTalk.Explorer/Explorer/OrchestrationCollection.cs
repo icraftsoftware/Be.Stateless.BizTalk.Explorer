@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.BizTalk.ExplorerOM;
 
 namespace Be.Stateless.BizTalk.Explorer
@@ -28,6 +29,7 @@ namespace Be.Stateless.BizTalk.Explorer
 			BizTalkOrchestrationCollection = orchestrations ?? throw new ArgumentNullException(nameof(orchestrations));
 		}
 
+		[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
 		public Orchestration this[string name]
 		{
 			get

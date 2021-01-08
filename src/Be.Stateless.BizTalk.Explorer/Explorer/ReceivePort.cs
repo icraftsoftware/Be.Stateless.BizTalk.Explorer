@@ -17,10 +17,13 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using BizTalkReceivePort = Microsoft.BizTalk.ExplorerOM.ReceivePort;
 
 namespace Be.Stateless.BizTalk.Explorer
 {
+	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
+	[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global", Justification = "Public API.")]
 	public class ReceivePort
 	{
 		public ReceivePort(BizTalkReceivePort port)

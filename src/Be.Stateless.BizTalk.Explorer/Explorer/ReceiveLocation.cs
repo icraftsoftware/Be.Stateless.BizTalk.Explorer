@@ -17,10 +17,12 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using BizTalkReceiveLocation = Microsoft.BizTalk.ExplorerOM.ReceiveLocation;
 
 namespace Be.Stateless.BizTalk.Explorer
 {
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
 	public class ReceiveLocation
 	{
 		public ReceiveLocation(BizTalkReceiveLocation location)
@@ -28,6 +30,7 @@ namespace Be.Stateless.BizTalk.Explorer
 			BizTalkReceiveLocation = location ?? throw new ArgumentNullException(nameof(location));
 		}
 
+		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
 		public bool Enabled
 		{
 			get => BizTalkReceiveLocation.Enable;
@@ -36,6 +39,7 @@ namespace Be.Stateless.BizTalk.Explorer
 
 		public string Name => BizTalkReceiveLocation.Name;
 
+		[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local", Justification = "Public API.")]
 		private BizTalkReceiveLocation BizTalkReceiveLocation { get; set; }
 
 		public void Disable()

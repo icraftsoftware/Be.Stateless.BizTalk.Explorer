@@ -61,17 +61,12 @@ namespace Be.Stateless.BizTalk.Management
 			get
 			{
 				var status = _managementObject["OrchestrationStatus"];
-				switch (status.ToString())
-				{
-					case "2":
-						return OrchestrationStatus.Unenlisted;
-					case "3":
-						return OrchestrationStatus.Enlisted;
-					case "4":
-						return OrchestrationStatus.Started;
-					default:
-						throw new InvalidOperationException("Unknown WMI OrchestrationStatus.");
-				}
+				return status.ToString() switch {
+					"2" => OrchestrationStatus.Unenlisted,
+					"3" => OrchestrationStatus.Enlisted,
+					"4" => OrchestrationStatus.Started,
+					_ => throw new InvalidOperationException("Unknown WMI OrchestrationStatus.")
+				};
 			}
 		}
 
@@ -92,6 +87,7 @@ namespace Be.Stateless.BizTalk.Management
 			}
 		}
 
+		[SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global", Justification = "Dispose pattern.")]
 		protected virtual void Dispose(bool disposing)
 		{
 			if (_isDisposed) return;
@@ -99,6 +95,7 @@ namespace Be.Stateless.BizTalk.Management
 			_isDisposed = true;
 		}
 
+		[SuppressMessage("ReSharper", "InvertIf")]
 		public void EnsureStarted()
 		{
 			_logger.Debug($"Ensuring orchestration '{_orchestrationType.FullName}' is started.");
@@ -109,6 +106,7 @@ namespace Be.Stateless.BizTalk.Management
 			}
 		}
 
+		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
 		public void EnsureNotStarted()
 		{
 			_logger.Debug($"Ensuring orchestration '{_orchestrationType.FullName}' is not started.");
@@ -118,6 +116,7 @@ namespace Be.Stateless.BizTalk.Management
 			}
 		}
 
+		[SuppressMessage("ReSharper", "InvertIf")]
 		public void EnsureUnenlisted()
 		{
 			_logger.Debug($"Ensuring orchestration '{_orchestrationType.FullName}' is unenlisted.");
