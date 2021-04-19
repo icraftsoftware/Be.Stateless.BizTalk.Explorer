@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2020 François Chabot
+// Copyright © 2012 - 2021 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 #endregion
 
-using Microsoft.Win32;
+using Be.Stateless.BizTalk.Management;
 
 namespace Be.Stateless.BizTalk.Explorer
 {
@@ -28,14 +28,8 @@ namespace Be.Stateless.BizTalk.Explorer
 		static BizTalkServerGroup()
 		{
 			Applications = new ApplicationCollection();
-			const string path = @"SOFTWARE\Microsoft\BizTalk Server\3.0\Administration";
-			using (var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-			using (var subKey = baseKey.OpenSubKey(path))
-			{
-				ManagementDatabase = subKey != null
-					? new BizTalkServerManagementDatabase((string) subKey.GetValue("MgmtDBServer"), (string) subKey.GetValue("MgmtDBName"))
-					: null;
-			}
+			if (BizTalkInstallation.IsConfigured)
+				ManagementDatabase = new BizTalkServerManagementDatabase(BizTalkInstallation.ManagementDatabaseServer, BizTalkInstallation.ManagementDatabaseName);
 		}
 
 		/// <summary>
@@ -43,7 +37,7 @@ namespace Be.Stateless.BizTalk.Explorer
 		/// </summary>
 		public static ApplicationCollection Applications { get; }
 
-		public static bool IsConfigured => ManagementDatabase != null;
+		public static bool IsConfigured => BizTalkInstallation.IsConfigured;
 
 		public static BizTalkServerManagementDatabase ManagementDatabase { get; }
 	}
