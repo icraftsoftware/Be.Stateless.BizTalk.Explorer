@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2020 François Chabot
+// Copyright © 2012 - 2021 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,10 +34,11 @@ namespace Be.Stateless.BizTalk.Explorer
 		{
 			get
 			{
-				var explorerOrchestration = BizTalkOrchestrationCollection[name];
-				if (explorerOrchestration == null)
-					throw new ArgumentException($"BizTalk Orchestration '{name}' cannot be found in BizTalk Server Group [{BizTalkServerGroup.ManagementDatabase}].", nameof(name));
-				return new Orchestration(explorerOrchestration);
+				var explorerOrchestration = BizTalkOrchestrationCollection[name]
+					?? throw new ArgumentException(
+						$"BizTalk Orchestration '{name}' cannot be found in BizTalk Server Group [{BizTalkServerGroup.ManagementDatabase}].",
+						nameof(name));
+				return new(explorerOrchestration);
 			}
 		}
 

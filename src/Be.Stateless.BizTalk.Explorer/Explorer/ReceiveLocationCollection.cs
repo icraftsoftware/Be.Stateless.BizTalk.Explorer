@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2020 François Chabot
+// Copyright © 2012 - 2021 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,12 +34,11 @@ namespace Be.Stateless.BizTalk.Explorer
 		{
 			get
 			{
-				var explorerReceiveLocation = BizTalkReceiveLocationCollection[name];
-				if (explorerReceiveLocation == null)
-					throw new ArgumentException(
+				var explorerReceiveLocation = BizTalkReceiveLocationCollection[name]
+					?? throw new ArgumentException(
 						$"BizTalk Receive Location '{name}' cannot be found in BizTalk Server Group [{BizTalkServerGroup.ManagementDatabase}].",
 						nameof(name));
-				return new ReceiveLocation(explorerReceiveLocation);
+				return new(explorerReceiveLocation);
 			}
 		}
 

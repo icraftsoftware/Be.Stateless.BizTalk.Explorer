@@ -27,9 +27,8 @@ namespace Be.Stateless.BizTalk.Explorer
 	{
 		static BizTalkServerGroup()
 		{
-			Applications = new ApplicationCollection();
-			if (BizTalkInstallation.IsConfigured)
-				ManagementDatabase = new BizTalkServerManagementDatabase(BizTalkInstallation.ManagementDatabaseServer, BizTalkInstallation.ManagementDatabaseName);
+			Applications = new();
+			if (BizTalkInstallation.IsConfigured) ManagementDatabase = new(BizTalkInstallation.ManagementDatabaseServer, BizTalkInstallation.ManagementDatabaseName);
 		}
 
 		/// <summary>

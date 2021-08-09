@@ -73,7 +73,7 @@ namespace Be.Stateless.BizTalk.Reflection
 					.Distinct()
 					.ToArray()
 				?? Array.Empty<string>();
-			_assembliesPendingResolution = new HashSet<string>();
+			_assembliesPendingResolution = new();
 			AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
 
 			if (!_systemProbingFolderPaths.Any()) logAppender?.Invoke("BizTalk system folder paths could not be found.");
@@ -110,9 +110,7 @@ namespace Be.Stateless.BizTalk.Reflection
 				if (resolvedPath != null)
 				{
 					_logAppender?.Invoke($"   Resolved assembly '{resolvedPath}'.");
-					// see https://stackoverflow.com/a/1477899/1789441
-					// see https://stackoverflow.com/a/41858160/1789441
-					return AppDomain.CurrentDomain.Load(Assembly.LoadFrom(resolvedPath).GetName());
+					return AssemblyLoader.Load(resolvedPath);
 				}
 				_logAppender?.Invoke($"   Could not resolve assembly '{args.Name}'.");
 				return null;

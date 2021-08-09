@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2020 François Chabot
+// Copyright © 2012 - 2021 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@ namespace Be.Stateless.BizTalk.Explorer
 		{
 			_applicationCollection = applicationCollection;
 			BizTalkApplication = application ?? throw new ArgumentNullException(nameof(application));
-			Orchestrations = new OrchestrationCollection(BizTalkApplication.Orchestrations);
-			ReceivePorts = new ReceivePortCollection(BizTalkApplication.ReceivePorts);
-			SendPorts = new SendPortCollection(BizTalkApplication.SendPorts);
+			Orchestrations = new(BizTalkApplication.Orchestrations);
+			ReceivePorts = new(BizTalkApplication.ReceivePorts);
+			SendPorts = new(BizTalkApplication.SendPorts);
 		}
 
 		#region IDisposable Members

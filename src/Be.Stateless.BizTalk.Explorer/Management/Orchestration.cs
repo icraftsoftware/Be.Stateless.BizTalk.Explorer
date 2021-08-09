@@ -37,7 +37,7 @@ namespace Be.Stateless.BizTalk.Management
 					$"Type '{type.FullName}' is not an BTXService-derived orchestration type",
 					nameof(type));
 			_orchestrationType = type;
-			_managementObject = new ManagementObject { Path = ManagementPath };
+			_managementObject = new() { Path = ManagementPath };
 			_managementObject.Get();
 		}
 
@@ -82,7 +82,7 @@ namespace Be.Stateless.BizTalk.Management
 					_orchestrationType.Assembly.GetName().GetPublicKeyToken().Aggregate(string.Empty, (k, t) => $"{k}{t:x2}"),
 					_orchestrationType.Assembly.GetName().Version,
 					_orchestrationType.FullName);
-				return new ManagementPath(path);
+				return new(path);
 			}
 		}
 
@@ -248,7 +248,7 @@ namespace Be.Stateless.BizTalk.Management
 
 		private void WmiRefresh()
 		{
-			_managementObject = new ManagementObject { Path = _managementObject.Path };
+			_managementObject = new() { Path = _managementObject.Path };
 			_managementObject.Get();
 		}
 
