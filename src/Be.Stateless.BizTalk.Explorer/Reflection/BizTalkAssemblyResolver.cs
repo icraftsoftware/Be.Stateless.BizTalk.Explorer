@@ -88,17 +88,21 @@ namespace Be.Stateless.BizTalk.Reflection
 
 		#endregion
 
+		[SuppressMessage("ReSharper", "CommentTypo")]
 		private Assembly OnAssemblyResolve(object sender, ResolveEventArgs args)
 		{
-			// see https://docs.microsoft.com/en-us/troubleshoot/dotnet/framework/serialization-onassemblyresolve-event-causes-recursion, workaround 2
+			// see https://docs.microsoft.com/en-us/troubleshoot/dotnet/framework/serialization-onassemblyresolve-event-causes-recursion#workaround-2-write-a-more-robust-assembly-resolve-handler
+			// see https://docs.microsoft.com/en-us/dotnet/standard/assembly/resolve-loads#the-correct-way-to-handle-assemblyresolve
 			if (_assembliesPendingResolution.Contains(args.Name)) return null;
+
 			var assemblyName = new AssemblyName(args.Name);
 			if (_skipResourceAssemblies && assemblyName.IsResourceAssembly()) return null;
 			if (assemblyName.IsNonExistentMicrosoftAssembly() || assemblyName.IsNonExistentStatelessAssembly()) return null;
 			try
 			{
-				_assembliesPendingResolution.Add(args.Name);
-				if (args.RequestingAssembly != null) _logAppender?.Invoke($"   Resolving dependencies for assembly: '{args.RequestingAssembly.FullName}'.");
+				if (!_assembliesPendingResolution.Add(args.Name)) return null;
+				_logAppender?.Invoke($"   Resolving assembly '{args.Name}' in AppDomain '{AppDomain.CurrentDomain.FriendlyName}'.");
+				if (args.RequestingAssembly != null) _logAppender?.Invoke($"   Resolving dependencies for assembly '{args.RequestingAssembly.FullName}'.");
 				var resolvedPath = _systemProbingFolderPaths.Concat(_userProbingFolderPaths)
 					.Select(
 						path => {

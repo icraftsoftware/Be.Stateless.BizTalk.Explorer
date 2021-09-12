@@ -16,6 +16,7 @@
 
 #endregion
 
+using System;
 using System.Reflection;
 
 namespace Be.Stateless.BizTalk.Reflection
@@ -28,7 +29,8 @@ namespace Be.Stateless.BizTalk.Reflection
 			// see https://stackoverflow.com/a/41858160/1789441
 			// see https://stackoverflow.com/a/7354279/
 			// see https://docs.microsoft.com/en-us/archive/blogs/suzcook/loadassemblyname
-			return Assembly.Load(AssemblyName.GetAssemblyName(path));
+			return Assembly.Load(Assembly.LoadFrom(path).GetName())
+				?? throw new InvalidOperationException($"Could not load assembly '{path}' in AppDomain '{AppDomain.CurrentDomain.FriendlyName}'.");
 		}
 	}
 }
