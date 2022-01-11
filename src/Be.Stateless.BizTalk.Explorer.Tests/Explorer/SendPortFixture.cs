@@ -16,7 +16,6 @@
 
 #endregion
 
-using System;
 using FluentAssertions;
 using Microsoft.BizTalk.ExplorerOM;
 using Xunit;
@@ -25,9 +24,11 @@ namespace Be.Stateless.BizTalk.Explorer
 {
 	public class SendPortFixture
 	{
-		[SkippableFact(typeof(ArgumentException))]
+		[SkippableFact]
 		public void Unenlist()
 		{
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
 			var application = BizTalkServerGroup.Applications["BizTalk Server Default Application"];
 			var sendPort = application.SendPorts["DummySendPort"];
 

@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2020 François Chabot
+// Copyright © 2012 - 2021 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,142 +18,177 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Be.Stateless.BizTalk.Explorer;
 using FluentAssertions;
 using Microsoft.BizTalk.ExplorerOM;
 using Xunit;
-using static Be.Stateless.DelegateFactory;
+using static FluentAssertions.FluentActions;
 
 namespace Be.Stateless.BizTalk.Management
 {
+	[SuppressMessage("ReSharper", "AccessToDisposedClosure")]
 	public class OrchestrationFixture : IDisposable
 	{
+		#region Setup/Teardown
+
+		[SuppressMessage("ReSharper", "InvertIf")]
 		public OrchestrationFixture()
 		{
-			var assembly = Assembly.Load("Microsoft.BizTalk.Edi.BatchingOrchestration, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
-			_orchestrationType = assembly.GetType("Microsoft.BizTalk.Edi.BatchSuspendOrchestration.BatchElementSuspendService", true);
+			if (BizTalkServerGroup.IsConfigured)
+			{
+				var assembly = Assembly.Load("Microsoft.BizTalk.Edi.BatchingOrchestration, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
+				_orchestrationType = assembly.GetType("Microsoft.BizTalk.Edi.BatchSuspendOrchestration.BatchElementSuspendService", true);
+			}
 		}
 
-		#region IDisposable Members
-
+		[SuppressMessage("ReSharper", "InvertIf")]
 		public void Dispose()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
-			orchestration.EnsureUnenlisted();
+			if (BizTalkServerGroup.IsConfigured)
+			{
+				var orchestration = new Orchestration(_orchestrationType);
+				orchestration.EnsureUnenlisted();
+			}
 		}
 
 		#endregion
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void EnlistEnlistedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureNotUnenlisted();
-			Action(() => orchestration.Enlist()).Should().Throw<COMException>();
+			Invoking(() => orchestration.Enlist()).Should().Throw<COMException>();
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void EnlistStartedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureStarted();
-			Action(() => orchestration.Enlist()).Should().Throw<COMException>();
+			Invoking(() => orchestration.Enlist()).Should().Throw<COMException>();
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void EnlistUnenlistedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureUnenlisted();
-			Action(() => orchestration.Enlist()).Should().NotThrow();
+			Invoking(() => orchestration.Enlist()).Should().NotThrow();
 			orchestration.Status.Should().Be(OrchestrationStatus.Enlisted);
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void StartEnlistedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureNotUnenlisted();
-			Action(() => orchestration.Start()).Should().NotThrow();
+			Invoking(() => orchestration.Start()).Should().NotThrow();
 			orchestration.Status.Should().Be(OrchestrationStatus.Started);
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void StartStartedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureStarted();
-			Action(() => orchestration.Start()).Should().Throw<COMException>();
+			Invoking(() => orchestration.Start()).Should().Throw<COMException>();
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void StartUnenlistedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureUnenlisted();
-			Action(() => orchestration.Start()).Should().Throw<COMException>();
+			Invoking(() => orchestration.Start()).Should().Throw<COMException>();
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void StopEnlistedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureNotUnenlisted();
-			Action(() => orchestration.Stop()).Should().Throw<COMException>();
+			Invoking(() => orchestration.Stop()).Should().Throw<COMException>();
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void StopStartedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureStarted();
-			Action(() => orchestration.Stop()).Should().NotThrow();
+			Invoking(() => orchestration.Stop()).Should().NotThrow();
 			orchestration.Status.Should().Be(OrchestrationStatus.Enlisted);
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void StopUnenlistedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureUnenlisted();
-			Action(() => orchestration.Stop()).Should().Throw<COMException>();
+			Invoking(() => orchestration.Stop()).Should().Throw<COMException>();
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		[SuppressMessage("ReSharper", "ObjectCreationAsStatement")]
 		public void ThrowsIfNotBtxServiceDerivedType()
 		{
-			Action(() => new Orchestration(typeof(string)))
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			Invoking(() => new Orchestration(typeof(string)))
 				.Should().Throw<ArgumentException>()
 				.WithMessage("Type 'System.String' is not an BTXService-derived orchestration type*");
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void UnenlistEnlistedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureNotUnenlisted();
-			Action(() => orchestration.Unenlist()).Should().NotThrow();
+			Invoking(() => orchestration.Unenlist()).Should().NotThrow();
 			orchestration.Status.Should().Be(OrchestrationStatus.Unenlisted);
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void UnenlistStartedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureStarted();
-			Action(() => orchestration.Unenlist()).Should().NotThrow();
+			Invoking(() => orchestration.Unenlist()).Should().NotThrow();
 			orchestration.Status.Should().Be(OrchestrationStatus.Unenlisted);
 		}
 
-		[SkippableFact(typeof(FileNotFoundException), typeof(TypeLoadException))]
+		[SkippableFact]
 		public void UnenlistUnenlistedOrchestration()
 		{
-			var orchestration = new Orchestration(_orchestrationType);
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
+
+			using var orchestration = new Orchestration(_orchestrationType);
 			orchestration.EnsureUnenlisted();
-			Action(() => orchestration.Unenlist()).Should().Throw<COMException>();
+			Invoking(() => orchestration.Unenlist()).Should().Throw<COMException>();
 		}
 
 		private readonly Type _orchestrationType;

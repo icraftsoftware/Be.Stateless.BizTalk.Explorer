@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2020 François Chabot
+// Copyright © 2012 - 2022 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,13 +21,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Management;
 using Be.Stateless.Extensions;
-using log4net;
 using Microsoft.BizTalk.ExplorerOM;
 using Microsoft.BizTalk.XLANGs.BTXEngine;
 
 namespace Be.Stateless.BizTalk.Management
 {
-	public class Orchestration
+	public class Orchestration : IDisposable
 	{
 		public Orchestration(Type type)
 		{
@@ -37,31 +36,40 @@ namespace Be.Stateless.BizTalk.Management
 					$"Type '{type.FullName}' is not an BTXService-derived orchestration type",
 					nameof(type));
 			_orchestrationType = type;
-			_managementObject = new ManagementObject { Path = ManagementPath };
+			_managementObject = new() { Path = ManagementPath };
 			_managementObject.Get();
 		}
+
+		~Orchestration()
+		{
+			Dispose(false);
+		}
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		#endregion
 
 		public OrchestrationStatus Status
 		{
 			get
 			{
 				var status = _managementObject["OrchestrationStatus"];
-				switch (status.ToString())
-				{
-					case "2":
-						return OrchestrationStatus.Unenlisted;
-					case "3":
-						return OrchestrationStatus.Enlisted;
-					case "4":
-						return OrchestrationStatus.Started;
-					default:
-						throw new InvalidOperationException("Unknown WMI OrchestrationStatus.");
-				}
+				return status.ToString() switch {
+					"2" => OrchestrationStatus.Unenlisted,
+					"3" => OrchestrationStatus.Enlisted,
+					"4" => OrchestrationStatus.Started,
+					_ => throw new InvalidOperationException("Unknown WMI OrchestrationStatus.")
+				};
 			}
 		}
 
 		[SuppressMessage("ReSharper", "UseStringInterpolation")]
-		[SuppressMessage("Globalization", "CA1305:Specify IFormatProvider")]
 		private ManagementPath ManagementPath
 		{
 			get
@@ -73,13 +81,21 @@ namespace Be.Stateless.BizTalk.Management
 					_orchestrationType.Assembly.GetName().GetPublicKeyToken().Aggregate(string.Empty, (k, t) => $"{k}{t:x2}"),
 					_orchestrationType.Assembly.GetName().Version,
 					_orchestrationType.FullName);
-				return new ManagementPath(path);
+				return new(path);
 			}
 		}
 
+		[SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global", Justification = "Dispose pattern.")]
+		protected virtual void Dispose(bool disposing)
+		{
+			if (_isDisposed) return;
+			if (disposing) _managementObject?.Dispose();
+			_isDisposed = true;
+		}
+
+		[SuppressMessage("ReSharper", "InvertIf")]
 		public void EnsureStarted()
 		{
-			_logger.Debug($"Ensuring orchestration '{_orchestrationType.FullName}' is started.");
 			if (Status != OrchestrationStatus.Started)
 			{
 				EnsureNotUnenlisted();
@@ -87,18 +103,18 @@ namespace Be.Stateless.BizTalk.Management
 			}
 		}
 
+		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
 		public void EnsureNotStarted()
 		{
-			_logger.Debug($"Ensuring orchestration '{_orchestrationType.FullName}' is not started.");
 			if (Status == OrchestrationStatus.Started)
 			{
 				Stop();
 			}
 		}
 
+		[SuppressMessage("ReSharper", "InvertIf")]
 		public void EnsureUnenlisted()
 		{
-			_logger.Debug($"Ensuring orchestration '{_orchestrationType.FullName}' is unenlisted.");
 			if (Status != OrchestrationStatus.Unenlisted)
 			{
 				EnsureNotStarted();
@@ -108,7 +124,6 @@ namespace Be.Stateless.BizTalk.Management
 
 		public void EnsureNotUnenlisted()
 		{
-			_logger.Debug($"Ensuring orchestration '{_orchestrationType.FullName}' is not unenlisted.");
 			if (Status == OrchestrationStatus.Unenlisted)
 			{
 				Enlist();
@@ -120,7 +135,6 @@ namespace Be.Stateless.BizTalk.Management
 		/// </summary>
 		public void Enlist()
 		{
-			_logger.Debug($"Enlisting orchestration '{_orchestrationType.FullName}'.");
 			WmiEnlist();
 			WmiRefresh();
 		}
@@ -130,7 +144,6 @@ namespace Be.Stateless.BizTalk.Management
 		/// </summary>
 		public void Start()
 		{
-			_logger.Debug($"Starting orchestration '{_orchestrationType.FullName}'.");
 			WmiStart(1, 1, 1);
 			WmiRefresh();
 		}
@@ -140,7 +153,6 @@ namespace Be.Stateless.BizTalk.Management
 		/// </summary>
 		public void Stop()
 		{
-			_logger.Debug($"Stopping orchestration '{_orchestrationType.FullName}'.");
 			WmiStop();
 			WmiRefresh();
 		}
@@ -150,7 +162,6 @@ namespace Be.Stateless.BizTalk.Management
 		/// </summary>
 		public void Unenlist()
 		{
-			_logger.Debug($"Unenlisting orchestration '{_orchestrationType.FullName}'.");
 			WmiUnenlist(2);
 			WmiRefresh();
 		}
@@ -159,7 +170,6 @@ namespace Be.Stateless.BizTalk.Management
 		/// Enlists the orchestration by creating its activation subscription.
 		/// </summary>
 		/// <seealso href="https://docs.microsoft.com/en-us/biztalk/core/technical-reference/msbts-orchestration-enlist-method-wmi">MSBTS_Orchestration.Enlist</seealso>
-		[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 		private void WmiEnlist()
 		{
 			_managementObject.InvokeMethod("Enlist", Array.Empty<object>());
@@ -229,12 +239,12 @@ namespace Be.Stateless.BizTalk.Management
 
 		private void WmiRefresh()
 		{
-			_managementObject = new ManagementObject { Path = _managementObject.Path };
+			_managementObject = new() { Path = _managementObject.Path };
 			_managementObject.Get();
 		}
 
-		private static readonly ILog _logger = LogManager.GetLogger(typeof(Orchestration));
 		private readonly Type _orchestrationType;
+		private bool _isDisposed;
 		private ManagementObject _managementObject;
 	}
 }

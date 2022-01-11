@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2020 François Chabot
+// Copyright © 2012 - 2021 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.BizTalk.ExplorerOM;
 
 namespace Be.Stateless.BizTalk.Explorer
@@ -28,14 +29,16 @@ namespace Be.Stateless.BizTalk.Explorer
 			BizTalkOrchestrationCollection = orchestrations ?? throw new ArgumentNullException(nameof(orchestrations));
 		}
 
+		[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
 		public Orchestration this[string name]
 		{
 			get
 			{
-				var explorerOrchestration = BizTalkOrchestrationCollection[name];
-				if (explorerOrchestration == null)
-					throw new ArgumentException($"BizTalk Orchestration '{name}' cannot be found in BizTalk Server Group [{BizTalkServerGroup.ManagementDatabase}].", nameof(name));
-				return new Orchestration(explorerOrchestration);
+				var explorerOrchestration = BizTalkOrchestrationCollection[name]
+					?? throw new ArgumentException(
+						$"BizTalk Orchestration '{name}' cannot be found in BizTalk Server Group [{BizTalkServerGroup.ManagementDatabase}].",
+						nameof(name));
+				return new(explorerOrchestration);
 			}
 		}
 

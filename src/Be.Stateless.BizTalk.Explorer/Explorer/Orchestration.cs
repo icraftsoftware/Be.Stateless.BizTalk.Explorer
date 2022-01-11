@@ -17,10 +17,13 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.BizTalk.ExplorerOM;
 
 namespace Be.Stateless.BizTalk.Explorer
 {
+	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
+	[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
 	public class Orchestration
 	{
 		public Orchestration(BtsOrchestration orchestration)

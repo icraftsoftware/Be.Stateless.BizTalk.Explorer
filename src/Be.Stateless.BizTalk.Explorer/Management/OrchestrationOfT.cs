@@ -16,10 +16,12 @@
 
 #endregion
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.BizTalk.XLANGs.BTXEngine;
 
 namespace Be.Stateless.BizTalk.Management
 {
+	[SuppressMessage("ReSharper", "UnusedType.Global", Justification = "Public API.")]
 	public class Orchestration<T> : Orchestration
 		where T : BTXService
 	{

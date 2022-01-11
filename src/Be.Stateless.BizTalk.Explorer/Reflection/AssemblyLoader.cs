@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2020 François Chabot
+// Copyright © 2012 - 2022 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,13 +16,19 @@
 
 #endregion
 
-using System;
+using System.Reflection;
 
-// ReSharper disable once CheckNamespace
-namespace Be.Stateless
+namespace Be.Stateless.BizTalk.Reflection
 {
-	public static class DelegateFactory
+	public static class AssemblyLoader
 	{
-		public static Action Action(Action action) => action;
+		public static Assembly Load(string path)
+		{
+			// see https://stackoverflow.com/a/1477899/1789441
+			// see https://stackoverflow.com/a/41858160/1789441
+			// see https://stackoverflow.com/a/7354279/
+			// see https://docs.microsoft.com/en-us/archive/blogs/suzcook/loadassemblyname
+			return Assembly.Load(Assembly.LoadFrom(path).GetName());
+		}
 	}
 }

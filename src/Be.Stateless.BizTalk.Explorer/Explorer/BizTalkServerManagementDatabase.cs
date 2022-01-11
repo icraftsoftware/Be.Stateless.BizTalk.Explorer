@@ -19,10 +19,12 @@
 using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Be.Stateless.Extensions;
 
 namespace Be.Stateless.BizTalk.Explorer
 {
+	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global", Justification = "Public API.")]
 	public class BizTalkServerManagementDatabase
 	{
 		public BizTalkServerManagementDatabase(string server, string database)

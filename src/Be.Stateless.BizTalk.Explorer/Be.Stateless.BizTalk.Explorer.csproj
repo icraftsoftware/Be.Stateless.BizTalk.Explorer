@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
     <RootNamespace>Be.Stateless.BizTalk</RootNamespace>
-    <AssemblyTitle>Be.Stateless.BizTalk.Explorer</AssemblyTitle>
+    <AssemblyName>Be.Stateless.BizTalk.Explorer</AssemblyName>
     <Description>BizTalk.Factory's Microsoft BizTalk Server Administration API for general purpose BizTalk Server development.</Description>
   </PropertyGroup>
 
@@ -16,23 +16,20 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#system-variables -->
-    <ContinuousIntegrationBuild Condition="'$(TF_BUILD)' == 'true'">true</ContinuousIntegrationBuild>
-    <Deterministic>true</Deterministic>
     <GeneratePackageOnBuild Condition=" '$(GeneratePackageOnBuild)' == '' ">false</GeneratePackageOnBuild>
     <IsPackable>true</IsPackable>
-    <PackageId>$(AssemblyTitle)</PackageId>
+    <PackageId>$(AssemblyName)</PackageId>
     <PackageDescription>$(Description)</PackageDescription>
     <!--<PackageIconUrl>icon url prop</PackageIconUrl>-->
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
     <!--<PackageReleaseNotes>release notes prop</PackageReleaseNotes>-->
-    <PackageTags>library extension utility</PackageTags>
+    <PackageTags>BizTalk administration catalog explorer library</PackageTags>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DocumentationFile>bin\Release\$(AssemblyTitle).xml</DocumentationFile>
+    <DocumentationFile>bin\Release\$(AssemblyName).xml</DocumentationFile>
     <NoWarn>1701;1702</NoWarn>
   </PropertyGroup>
 
@@ -41,18 +38,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Be.Stateless.Extensions" Version="2.0.20224.33378" />
+    <PackageReference Include="Be.Stateless.Extensions" Version="2.1.22025.20499" />
     <PackageReference Include="BizTalk.Server.2020.Runtime" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="log4net" Version="2.0.9" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
+    <PackageReference Include="BizTalk.Server.2020.Utilities" Version="1.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="System.Management" Version="4.7.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="System.Management" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

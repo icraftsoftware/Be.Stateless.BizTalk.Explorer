@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2020 François Chabot
+// Copyright © 2012 - 2021 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using BizTalkReceivePortCollection = Microsoft.BizTalk.ExplorerOM.ReceivePortCollection;
 
 namespace Be.Stateless.BizTalk.Explorer
@@ -28,16 +29,16 @@ namespace Be.Stateless.BizTalk.Explorer
 			BizTalkReceivePortCollection = ports ?? throw new ArgumentNullException(nameof(ports));
 		}
 
+		[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
 		public ReceivePort this[string name]
 		{
 			get
 			{
-				var explorerReceivePort = BizTalkReceivePortCollection[name];
-				if (explorerReceivePort == null)
-					throw new ArgumentException(
+				var explorerReceivePort = BizTalkReceivePortCollection[name]
+					?? throw new ArgumentException(
 						$"BizTalk Receive Port '{name}' cannot be found in BizTalk Server Group [{BizTalkServerGroup.ManagementDatabase}].",
 						nameof(name));
-				return new ReceivePort(explorerReceivePort);
+				return new(explorerReceivePort);
 			}
 		}
 

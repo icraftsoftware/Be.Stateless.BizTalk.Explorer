@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2020 François Chabot
+// Copyright © 2012 - 2021 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #endregion
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using BizTalkReceiveLocationCollection = Microsoft.BizTalk.ExplorerOM.ReceiveLocationCollection;
 
 namespace Be.Stateless.BizTalk.Explorer
@@ -28,16 +29,16 @@ namespace Be.Stateless.BizTalk.Explorer
 			BizTalkReceiveLocationCollection = locations ?? throw new ArgumentNullException(nameof(locations));
 		}
 
+		[SuppressMessage("ReSharper", "UnusedMember.Global", Justification = "Public API.")]
 		public ReceiveLocation this[string name]
 		{
 			get
 			{
-				var explorerReceiveLocation = BizTalkReceiveLocationCollection[name];
-				if (explorerReceiveLocation == null)
-					throw new ArgumentException(
+				var explorerReceiveLocation = BizTalkReceiveLocationCollection[name]
+					?? throw new ArgumentException(
 						$"BizTalk Receive Location '{name}' cannot be found in BizTalk Server Group [{BizTalkServerGroup.ManagementDatabase}].",
 						nameof(name));
-				return new ReceiveLocation(explorerReceiveLocation);
+				return new(explorerReceiveLocation);
 			}
 		}
 
