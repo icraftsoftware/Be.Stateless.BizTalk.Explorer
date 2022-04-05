@@ -18,9 +18,8 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Management;
-using Be.Stateless.Extensions;
+using Be.Stateless.Reflection.Extensions;
 using Microsoft.BizTalk.ExplorerOM;
 using Microsoft.BizTalk.XLANGs.BTXEngine;
 
@@ -74,12 +73,13 @@ namespace Be.Stateless.BizTalk.Management
 		{
 			get
 			{
+				var assemblyName = _orchestrationType.Assembly.GetName();
 				var path = string.Format(
 					@"\\.\root\MicrosoftBizTalkServer:MSBTS_Orchestration.AssemblyCulture='{0}',AssemblyName='{1}',AssemblyPublicKeyToken='{2}',AssemblyVersion='{3}',Name='{4}'",
-					_orchestrationType.Assembly.GetName().CultureName.IfNotNullOrEmpty(c => c) ?? "neutral",
-					_orchestrationType.Assembly.GetName().Name,
-					_orchestrationType.Assembly.GetName().GetPublicKeyToken().Aggregate(string.Empty, (k, t) => $"{k}{t:x2}"),
-					_orchestrationType.Assembly.GetName().Version,
+					assemblyName.GetCultureName(),
+					assemblyName.Name,
+					assemblyName.GetPublicKeyTokenString(),
+					assemblyName.Version,
 					_orchestrationType.FullName);
 				return new(path);
 			}

@@ -1,6 +1,6 @@
 ﻿#region Copyright & License
 
-// Copyright © 2012 - 2021 François Chabot
+// Copyright © 2012 - 2022 François Chabot
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,22 +25,24 @@ namespace Be.Stateless.BizTalk.Management
 {
 	public class BizTalkInstallationFixture
 	{
-		[Fact]
+		[SkippableFact]
 		public void DeveloperToolsPath()
 		{
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 			BizTalkInstallation.DeveloperToolsPath.Should().Be($@"{INSTALLATION_PATH}\Developer Tools\");
 		}
 
-		[Fact]
+		[SkippableFact]
 		public void InstallationPath()
 		{
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 			BizTalkInstallation.InstallationPath.Should().Be($@"{INSTALLATION_PATH}\");
 		}
 
 		[Fact]
 		public void IsInstalled()
 		{
-			BizTalkInstallation.IsInstalled.Should().BeTrue();
+			BizTalkInstallation.IsInstalled.Should().Be(BizTalkServerGroup.IsConfigured);
 		}
 
 		[SkippableFact]
@@ -57,9 +59,10 @@ namespace Be.Stateless.BizTalk.Management
 			BizTalkInstallation.ManagementDatabaseServer.Should().Be(Environment.MachineName);
 		}
 
-		[Fact]
+		[SkippableFact]
 		public void PipelineToolsPath()
 		{
+			Skip.IfNot(BizTalkServerGroup.IsConfigured);
 			BizTalkInstallation.PipelineToolsPath.Should().Be($@"{INSTALLATION_PATH}\SDK\Utilities\PipelineTools\");
 		}
 
